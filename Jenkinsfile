@@ -1,33 +1,25 @@
 pipeline {
     agent any
-    
-    stages {
-        stage('Clone Repo') {
-            steps {
-                git 'https://github.com/AdolfBharath/nginx-app.git'
-            }
-        }
 
+    stages {
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t my-nginx-app:latest .'
+                bat 'docker build -t my-nginx-app .'
             }
         }
 
         stage('Stop Old Container') {
             steps {
-                sh '''
-                if [ $(docker ps -q -f name=mynginx) ]; then
-                    docker stop mynginx
-                    docker rm mynginx
-                fi
+                bat '''
+                docker stop mynginx || exit 0
+                docker rm mynginx || exit 0
                 '''
             }
         }
 
         stage('Run New Container') {
             steps {
-                sh 'docker run -d --name mynginx -p 80:80 my-nginx-app:latest'
+                bat 'docker run -d --name mynginx -p 80:80 my-nginx-app'
             }
         }
     }
