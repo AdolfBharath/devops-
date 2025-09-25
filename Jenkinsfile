@@ -19,7 +19,7 @@ pipeline {
 
         stage('Run New Container') {
             steps {
-                bat 'docker run -d --name mynginx -p 80:80 my-nginx-app'
+                bat 'docker run -d -p 9090:80 --name mynginx my-nginx-app'
             }
         }
     }
