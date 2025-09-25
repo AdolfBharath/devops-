@@ -1,25 +1,16 @@
 pipeline {
     agent any
-
     stages {
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t my-nginx-app .'
+                sh 'docker build -t my-nginx-app .'
             }
         }
-
-        stage('Stop Old Container') {
+        stage('Run Container') {
             steps {
-                bat '''
-                docker stop mynginx || exit 0
-                docker rm mynginx || exit 0
-                '''
-            }
-        }
-
-        stage('Run New Container') {
-            steps {
-                bat 'docker run -d -p 9090:80 --name mynginx my-nginx-app'
+                sh 'docker stop mynginx || true'
+                sh 'docker rm mynginx || true'
+                sh 'docker run -d --name mynginx -p 80:80 my-nginx-app'
             }
         }
     }
