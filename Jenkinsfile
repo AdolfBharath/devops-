@@ -10,15 +10,13 @@ pipeline {
 
         stage('Stop Old Container') {
             steps {
-                // Stop old container if it exists
                 bat 'docker stop mynginx || exit 0'
                 bat 'docker rm mynginx || exit 0'
             }
         }
 
-        stage('Run New Container') {
+        stage('Run Container') {
             steps {
-                // Run container on port 9090 (since Jenkins uses 8080)
                 bat 'docker run -d --name mynginx -p 9090:80 my-nginx-app'
             }
         }
