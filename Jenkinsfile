@@ -1,16 +1,25 @@
 pipeline {
     agent any
+
     stages {
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t my-nginx-app .'
+                bat 'docker build -t my-nginx-app .'
             }
         }
-        stage('Run Container') {
+
+        stage('Stop Old Container') {
             steps {
-                sh 'docker stop mynginx || true'
-                sh 'docker rm mynginx || true'
-                sh 'docker run -d --name mynginx -p 80:80 my-nginx-app'
+                // Stop old container if it exists
+                bat 'docker stop mynginx || exit 0'
+                bat 'docker rm mynginx || exit 0'
+            }
+        }
+
+        stage('Run New Container') {
+            steps {
+                // Run container on port 9090 (since Jenkins uses 8080)
+                bat 'docker run -d --name mynginx -p 9090:80 my-nginx-app'
             }
         }
     }
